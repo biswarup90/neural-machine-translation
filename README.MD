@@ -32,8 +32,41 @@ Refer the file - https://github.com/biswarup90/neural-machine-translation/blob/m
 		in our example: decoder_input_data(15, 7) = 36
 	c. decoder_target_data(batch_size, maximum seq length encountered, vocab_size)
 		in our example: decoder_target_data(15, 7, 36) = 1
-8. Encoder model -> input, positional_embedding, LSTM
-9. Decoder model -> input, positional_embedding, LSTM, Dense layer for classification
-10. The total model is ([encoder_input, decoder_input], decoder_output). The encoder states are fed as initial state to the decoder.
-11. Model is trained on train data set and validated on validation data set
-12. We also tried with Bi-directional LSTM.
+#### Model
+The model is a Seq2Seq neural machine translation model that consists of an encoder and a decoder. The encoder takes in an input sequence of variable length, represented by the encoder_inputs tensor. The input sequence is passed through a PositionalEmbedding layer, which adds positional embeddings to the input sequence. The resulting tensor enc_emb is then fed into an LSTM layer with latent_dim size and recurrent_dropout of 0.5. The LSTM layer returns the final hidden states state_h and state_c as well as the output tensor encoder_outputs. The final hidden states are collected into a list encoder_states.
+
+The decoder takes in a target sequence of variable length, represented by the decoder_inputs tensor. The input sequence is passed through a PositionalEmbedding layer, similar to the encoder. The resulting tensor dec_emb_layer is then fed into an LSTM layer with latent_dim size, return_sequences=True, and recurrent_dropout of 0.5. The LSTM layer takes in the encoder_states as the initial states. The output tensor decoder_outputs is passed through a Dense layer with vocab size and softmax activation function to produce the final output tensor.
+
+The entire model is defined using the Model class in Keras, taking in both the encoder_inputs and decoder_inputs tensors as input and outputting the decoder_outputs tensor.
+
+## Transformer
+Refer the file https://github.com/biswarup90/neural-machine-translation/blob/main/Code/multiple_transformer.py
+The code is an implementation of a Transformer-based neural machine translation model with multiple encoder and decoder layers. Here is a breakdown of the code:
+
+1. The first part of the code defines some constants, such as the maximum length of the input and output sequences (MAX_LEN), the number of encoder and decoder layers (NUM_ENCODER_LAYERS and NUM_DECODER_LAYERS), the size of the word embedding and attention hidden layers (EMBEDDING_DIM and ATTENTION_DIM), and the size of the feedforward network in the encoder and decoder layers (FF_DIM).
+
+2. The PositionalEncoding class defines the positional encoding layer that adds positional information to the input sequence.
+
+3. The ScaledDotProductAttention class defines the scaled dot product attention mechanism used in the multi-head attention layer.
+
+4. The MultiHeadAttention class defines the multi-head attention layer that computes multiple attention outputs and concatenates them before feeding them through a linear layer.
+
+5. The TransformerEncoderLayer class defines a single encoder layer that consists of a multi-head attention layer followed by a feedforward network layer.
+
+6. The TransformerEncoder class defines the entire encoder that consists of multiple encoder layers stacked on top of each other.
+
+7. The TransformerDecoderLayer class defines a single decoder layer that consists of three multi-head attention layers and a feedforward network layer.
+
+8. The TransformerDecoder class defines the entire decoder that consists of multiple decoder layers stacked on top of each other.
+
+9. The Transformer class defines the entire transformer model that consists of the encoder and decoder layers.
+
+10. The build_model function initializes and compiles the transformer model with the Adam optimizer and the categorical cross-entropy loss function.
+
+11. The train function trains the transformer model on the input and target data.
+
+12. The evaluate function evaluates the trained model on the validation set.
+
+13. The predict function generates translations for the input data using the trained model.
+
+14. Overall, the code implements a multiple-layer transformer model for neural machine translation and provides functions for training, evaluation, and prediction.
